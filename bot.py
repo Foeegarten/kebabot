@@ -52,8 +52,6 @@ async def doin(onlstream):
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
-@client.listen('on_message')
-async def on_message(message):
 @client.command()
 async def avatar(ctx, *, avamember:discord.Member=None):
     userAvatarUrl = avamember.avatar_url
