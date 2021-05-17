@@ -114,5 +114,5 @@ async def send_message(channel_id: int,msg):
     await channel.send(msg)
 
 
-
-client.run('ODQxMzgwNzM4NTIzNzI1ODk0.YJl64A.c9WBfuvL3dAnZVbzcOLI3_GWUKI')
+token = os.environ.get('BOT_TOKEN')
+client.run(str(token)
