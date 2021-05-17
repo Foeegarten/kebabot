@@ -1,27 +1,15 @@
-from operator import truediv
-import discord,time as t,streamlink,asyncio,re,random
+import discord,time as t,streamlink,asyncio,re,random,os
 from discord import client
 from discord.ext.commands.core import cooldown
 from discord.ext import commands
 from discord.ext.commands.errors import CheckFailure, MissingPermissions
 from streamlink import PluginError
-from alpha import alphabet
 from typing import Optional
 from discord.utils import get
 players = {}
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
 url = 'https://wasd.tv/kebabobka'
 onlstream_ = False
-ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-        }
-YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
-FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
 @client.command()
 async def help(ctx):
     embed=discord.Embed(title="Комманды", color=0xff0000)
@@ -48,18 +36,19 @@ async def doin(onlstream):
         if onlstream==True:
             await send_message(826967699082969088,random.choice(alphabet.phrases))
             print('[log] stream is online')
+            timestart = t.time()
             await asyncio.sleep(15000)
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
 @client.command()
-async def avatar(ctx, *, avamember:discord.Member=None):
+async def avatar(ctx, *,  avamember : discord.Member=None):
     userAvatarUrl = avamember.avatar_url
     await ctx.send(userAvatarUrl)
 
 @client.command(pass_context=True)
 @commands.has_permissions(administrator=True,manage_messages=True)  
-async def clear(ctx, amount:int):
+async def clear(ctx, amount: int):
     try:
 
         await ctx.channel.purge(limit=amount)
@@ -81,18 +70,5 @@ async def info(ctx,*,member:discord.Member=None):
         embed.add_field(name='Зашел на сервер: ',value=member.joined_at.strftime("%a,%d,%B,%Y,%I,%M"),inline=False)
         embed.add_field(name=f'Роли [{len(roles)}] ',value="** **".join([role.mention for role in roles]),inline=False)
         await ctx.send(embed=embed)
-   
-
-
-@clear.error
-async def clear_error(error, ctx):
-    if isinstance(error, MissingPermissions):
-        text = "Sorry {}, you do not have permissions to do that!".format(ctx.message.author)
-        await send_message(ctx.message.channel, text)
-async def send_message(channel_id:int,msg):
-    channel = client.get_channel(channel_id)
-    await channel.send(msg)
-
-
 token = os.environ.get('BOT_TOKEN')
 client.run(str(token)
