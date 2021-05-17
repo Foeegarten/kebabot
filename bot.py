@@ -73,13 +73,13 @@ async def on_message(message):
 
         
 @client.command()
-async def avatar(ctx, *,  avamember : discord.Member=None):
+async def avatar(ctx, *,  avamember:discord.Member=None):
     userAvatarUrl = avamember.avatar_url
     await ctx.send(userAvatarUrl)
 
 @client.command(pass_context=True)
 @commands.has_permissions(administrator=True,manage_messages=True)  
-async def clear(ctx, amount: int):
+async def clear(ctx, amount:int):
     try:
 
         await ctx.channel.purge(limit=amount)
@@ -109,7 +109,7 @@ async def clear_error(error,ctx):
     if isinstance(error, MissingPermissions):
         text = "Sorry {}, you do not have permissions to do that!".format(ctx.message.author)
         await send_message(ctx.message.channel, text)
-async def send_message(channel_id: int,msg):
+async def send_message(channel_id:int,msg):
     channel = client.get_channel(channel_id)
     await channel.send(msg)
 
