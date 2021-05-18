@@ -71,4 +71,4 @@ async def info(ctx,*,member:discord.Member=None):
         embed.add_field(name=f'Роли [{len(roles)}] ',value="** **".join([role.mention for role in roles]),inline=False)
         await ctx.send(embed=embed)
 token = os.environ.get(BOT_TOKEN)
-client.run(str(token)
+client.run(str(token))
