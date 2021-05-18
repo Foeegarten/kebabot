@@ -10,6 +10,9 @@ players = {}
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
 url = 'https://wasd.tv/kebabobka'
 onlstream_ = False
+async def send_message(channel_id: int,msg):
+    channel = client.get_channel(channel_id)
+    await channel.send(msg)
 @client.command()
 async def help(ctx):
     embed=discord.Embed(title="Комманды", color=0xff0000)
