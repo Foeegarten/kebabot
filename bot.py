@@ -47,7 +47,7 @@ async def ready():
 async def doin(onlstream):
     while True:
         if onlstream==True:
-            await send_message(826967699082969088,random.choice(alphabet.phrases))
+            await send_message(826967699082969088,random.choice(alpha.phrases))
             print('[log] stream is online')
             timestart = t.time()
             await asyncio.sleep(15000)
