@@ -8,7 +8,7 @@ from typing import Optional
 from discord.utils import get
 players = {}
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
-url = 'https://wasd.tv/pugchomp'
+url = 'https://wasd.tv/kebabobka'
 onlstream_ = False
 async def send_message(channel_id: int,msg):
     channel = client.get_channel(channel_id)
@@ -52,7 +52,7 @@ async def doin(onlstream):
         if onlstream==True:
             print('[log] stream is online')
             await send_message(841409828470652950,random.choice(phrases))
-            await asyncio.sleep(10)
+            await asyncio.sleep(15000)
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
