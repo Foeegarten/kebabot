@@ -26,7 +26,7 @@ async def help(ctx):
 @client.command(pass_context=True)
 @commands.has_permissions( administrator = True)
 async def addrole(ctx, role: discord.Role, member: discord.Member=None):
-    await member.add_roles(member, role)
+    await member.add_roles(role)
     await send_message(826967699082969088,f'{member} повышен до {role},Kebabobka HQ поздравляет вас!')
 @client.command() 
 async def ping(ctx):
