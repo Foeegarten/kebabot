@@ -44,7 +44,7 @@ async def on_message(message):
 @client.listen('on_ready')
 async def ready():
     game = discord.Game("Приколы устраивает")
-    await bot.change_presence(status=discord.Status.idle, activity=game)
+    await client.change_presence(status=discord.Status.idle, activity=game)
     print('bot is ready')
     while True:
         try:
