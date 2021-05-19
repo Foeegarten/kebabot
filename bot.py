@@ -23,7 +23,11 @@ async def help(ctx):
     embed.add_field(name="avatar @user", value="Бот пришлет аватар пользователя", inline=True)
     embed.add_field(name="clear кол-во", value="Комманда только для администраторов,очищает чат на количество сообщений", inline=True)
     await ctx.send(embed=embed)
-    
+@client.command(pass_context=True)
+@commands.has_permissions( administrator = True)
+async def addrole(ctx, role: discord.Role, member: discord.Member=None):
+    member = member or ctx.message.author
+    await client.add_roles(member, role)
 @client.command() 
 async def ping(ctx):
     await ctx.send('pong')
@@ -39,6 +43,8 @@ async def on_message(message):
         await message.channel.send('<:nails:839113505713553408>')
 @client.listen('on_ready')
 async def ready():
+    game = discord.Game("Приколы устраивает")
+    await bot.change_presence(status=discord.Status.idle, activity=game)
     print('bot is ready')
     while True:
         try:
