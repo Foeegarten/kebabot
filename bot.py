@@ -6,6 +6,7 @@ from discord.ext.commands.errors import CheckFailure, MissingPermissions
 from streamlink import PluginError
 from typing import Optional
 from discord.utils import get
+#1
 players = {}
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
 url = 'https://wasd.tv/kebabobka'
