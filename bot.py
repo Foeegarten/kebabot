@@ -28,6 +28,7 @@ async def help(ctx):
 async def addrole(ctx, role: discord.Role, member: discord.Member=None):
     member = member or ctx.message.author
     await client.add_roles(member, role)
+    await send_message(826967699082969088,f'{member} получил роль {role}')
 @client.command() 
 async def ping(ctx):
     await ctx.send('pong')
