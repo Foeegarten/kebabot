@@ -31,6 +31,10 @@ async def ready():
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
+@client.listen('on_message')
+async def on_message(message):
+    if '<:nails:839113505713553408>' in message.content:
+        message.add_reaction('<:nails:839113505713553408>')
 @client.command(pass_context=True)
 @commands.has_permissions(administrator=True,manage_messages=True)  
 async def clear(ctx, amount: int):
@@ -39,5 +43,21 @@ async def clear(ctx, amount: int):
         await ctx.channel.purge(limit=amount)
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
+@client.command()
+async def info(ctx,*,member:discord.Member=None):
+    if not member:
+        member = ctx.author
+        roles = [role for role in ctx.author.roles]
+    else:
+        roles=[role for role in member.roles]
+        embed = discord.Embed(title=f"{member}",colour=member.colour,timestamp=ctx.message.created_at)
+        embed.set_author(name='Информация о пользователе: ')
+        embed.add_field(name='ID: ',value=member.id,inline=False)
+        embed.add_field(name='Имя пользователя: ',value=member.display_name,inline=False)
+        embed.add_field(name='Статус сейчас: ',value=str(member.status).title(),inline=False)
+        embed.add_field(name='Аккаунт создан: ',value=member.created_at.strftime("%a,%d,%B,%Y,%I,%M"),inline=False)
+        embed.add_field(name='Зашел на сервер: ',value=member.joined_at.strftime("%a,%d,%B,%Y,%I,%M"),inline=False)
+        embed.add_field(name=f'Роли [{len(roles)}] ',value="** **".join([role.mention for role in roles]),inline=False)
+        await ctx.send(embed=embed)
 token = os.getenv('tokenbot')
 client.run(str(token))
