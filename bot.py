@@ -34,7 +34,7 @@ async def ready():
 @client.listen('on_message')
 async def on_message(message):
     if '<:nails:839113505713553408>' in message.content:
-        message.add_reaction('<:nails:839113505713553408>')
+        await message.add_reaction('<:nails:839113505713553408>')
 @client.command(pass_context=True)
 @commands.has_permissions(administrator=True,manage_messages=True)  
 async def clear(ctx, amount: int):
