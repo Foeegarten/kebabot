@@ -76,23 +76,32 @@ async def slap(ctx,*,member:discord.Member=None):
     choice = random.randint(0,10)
     hit = random.randint(0,40)
     if choice < 7:
-        if hit>100-data['health']:
+        if hit<100-data['health']:
+            collection.update_one({"_id":member.id},
+                {"$set":{"health":data["health"]-hit}})
+            await ctx.send(f"Вы шлепнули {member} по жопке и нанесли {hit} урона")
+            await ctx.send(f"У {member} теперь {data['health']} хп")
+        elif data['health']==0:
+            await ctx.send('Ваш противник мертв')
+        else:
             hit = random.randint(0,100-data['health'])
             collection.update_one({"_id":member.id},
                 {"$set":{"health":data["health"]-hit}})
             await ctx.send(f"Вы шлепнули {member} по жопке и нанесли {hit} урона")
             await ctx.send(f"У {member} теперь {data['health']} хп")
-        else:
-            await ctx.send('Ваш противник уже мертвый')
         
     else:
-        if hit>100-ydata['health']:
+        if hit<100-ydata['health']:
+            collection.update_one({"_id":ctx.message.author.id},
+                {"$set":{"health":ydata["health"]-hit}})
+            await ctx.send(f"Замахиваясь по жопке {member} вы промахнулись и попали по своей и нанесли себе {hit} урона")
+        elif ydata['health']==0:
+            await ctx.send("Вы мертвы")
+        else:
             hit = random.randint(0,100-ydata['health'])
             collection.update_one({"_id":ctx.message.author.id},
                 {"$set":{"health":ydata["health"]-hit}})
             await ctx.send(f"Замахиваясь по жопке {member} вы промахнулись и попали по своей и нанесли себе {hit} урона")
-        else:
-            await ctx.send('Вы мертвы')
 @client.command()
 async def health(ctx):
     ydata = collection.find_one({"_id":ctx.message.author.id})
