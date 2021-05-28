@@ -63,7 +63,7 @@ async def attack(ctx,*,member:discord.Member=None):
 
 
 @client.command()
-async def info(ctx,*,member:discord.Member=None):
+async def info(ctx,member:discord.Member=None):
     if not member:
         member = ctx.author
         roles = [role for role in ctx.author.roles]
