@@ -47,6 +47,8 @@ async def clear(ctx, amount: int):
         ctx.send('Вы не администратор')
 @client.command()
 async def attack(ctx,*,member:discord.Member=None):
+    health1=100
+    health2=100
      choose = random.randint(1,2)
      if choose ==1:
          health1 -= random.randint(0,40)
