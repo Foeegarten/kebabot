@@ -80,14 +80,12 @@ async def slap(ctx,*,member:discord.Member=None):
             collection.update_one({"_id":member.id},
                 {"$set":{"health":data["health"]-hit}})
             await ctx.send(f"Вы шлепнули {member} по жопке и нанесли {hit} урона")
-            await ctx.send(f"У {member} теперь {data['health']} хп")
         elif data['health']<=0:
             await ctx.send('Ваш противник мертв')
         else:
             collection.update_one({"_id":member.id},
                 {"$set":{"health":data["health"]-hit}})
             await ctx.send(f"Вы шлепнули {member} по жопке и нанесли {hit} урона")
-            await ctx.send(f"У {member} теперь {data['health']} хп")
         
     else:
         if hit<100-ydata['health']:
