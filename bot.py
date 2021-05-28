@@ -72,60 +72,69 @@ async def clear(ctx, amount: int):
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
 @client.command()
-@cooldown(1,30,BucketType.user)
+@cooldown(1,15,BucketType.user)
 async def slap(ctx,*,member:discord.Member=None):
+    
     ydata = collection.find_one({"_id":ctx.message.author.id})
     data = collection.find_one({"_id":member.id})
     choice = random.randint(0,10)
     hit = random.randint(0,40)
+    if ydata['health']<=0:
+        embed = discord.Embed(title=f"{member.name}",colour=member.colour)
+        embed.add_field(name='Ошибка',value='Вы мертвый, восстановите здоровье, иначе вы не сможете атаковать!')
+        await ctx.send(embed=embed)
+        raise Exception('dead')
+    if data['health']<=0:
+        embed = discord.Embed(title=f"{member.name}",colour=member.colour)
+        embed.add_field(name='Ошибка',value='Ваш соперник мертв, лежачего не бьют!')
+        await ctx.send(embed=embed)
+        raise Exception('dead')
     if choice < 7:
-        if hit<100-data['health']:
-            collection.update_one({"_id":member.id},
-                {"$set":{"health":data["health"]-hit}})
-            await ctx.send(f"Вы шлепнули {member.name} по жопке и нанесли {hit} урона")
-        elif data['health']<=0:
-            await ctx.send('Ваш противник мертв')
-        else:
-            collection.update_one({"_id":member.id},
-                {"$set":{"health":data["health"]-hit}})
-            await ctx.send(f"Вы шлепнули {member.name} по жопке и нанесли {hit} урона")
-        
+        hit = random.randint(0,data['health'])
+        collection.update_one({"_id":member.id},
+            {"$set":{"health":data["health"]-hit}})
+        embed=discord.Embed(title=" ",colour=member.colour)
+        embed.add_field(name="Атака",value=f"Вы шлепнули {member.name} по жопке и нанесли **{hit}** урона")
+        await ctx.send(embed=embed)
     else:
-        if hit<100-ydata['health']:
-            collection.update_one({"_id":ctx.message.author.id},
-                {"$set":{"health":ydata["health"]-hit}})
-            await ctx.send(f"Замахиваясь по жопке {member.name} вы промахнулись и попали по своей и нанесли себе {hit} урона")
-        elif ydata['health']<=0:
-            await ctx.send("Вы мертвы")
-        else:
-            collection.update_one({"_id":ctx.message.author.id},
-                {"$set":{"health":ydata["health"]-hit}})
-            await ctx.send(f"Замахиваясь по жопке {member.name} вы промахнулись и попали по своей и нанесли себе {hit} урона")
+        hit = random.randint(0,ydata['health'])
+        collection.update_one({"_id":ctx.message.author.id},
+            {"$set":{"health":ydata["health"]-hit}})
+        embed=discord.Embed(title=" ",colour=member.colour)
+        embed.add_field(name="Атака",value=f"Замахиваясь по жопке {member.name} вы промахнулись и попали по своей и нанесли себе **{hit}** урона")
+        await ctx.send(embed=embed)
 @client.command()
 async def health(ctx):
     ydata = collection.find_one({"_id":ctx.message.author.id})
-    await ctx.send(f"У вас {ydata['health']} здоровья")
+    embed=discord.Embed(title=" ",colour=ctx.message.author.colour)
+    embed.add_field(name='Здоровье', value=f"У вас {ydata['health']} здоровья")
+    await ctx.send(embed=embed)
 
 @client.command()
 @cooldown(1,120,BucketType.user)
 async def heal(ctx):
     ydata = collection.find_one({"_id":ctx.message.author.id})
-    
     healint = random.randint(1,30)
     if ydata['health']+healint >100:
         healint = random.randint(0,ydata['health'])
         collection.update_one({"_id":ctx.message.author.id},
             {'$set':{"health":ydata['health']+healint}})
-        await ctx.send(f"Вы отхилили себе здоровье в размере {healint} единиц")
+        embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
+        embed.add_field(name='Здоровье',value=f"Вы отхилили себе здоровье в размере {healint} единиц")
+        await ctx.send(embed=embed)
         
     else:
         collection.update_one({"_id":ctx.message.author.id},
             {'$set':{"health":ydata['health']+healint}})
-        await ctx.send(f"Вы отхилили себе здоровье в размере {healint} единиц")
+        embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
+        embed.add_field(name='Здоровье',value=f"Вы отхилили себе здоровье в размере {healint} единиц")
+        await ctx.send(embed=embed)
 @client.listen('on_command_error')
 async def on_command_error(ctx,exc):
     if isinstance(exc, CommandOnCooldown):
-        await ctx.send('Еще не прошел кулдаун для данной команды')
+        embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
+        embed.add_field(name='Ошибка',value='Еще не прошел кулдаун для данной команды')
+        await ctx.send(embed=embed)
     
 
 @client.command()
