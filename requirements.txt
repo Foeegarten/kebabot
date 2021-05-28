@@ -1,3 +1,5 @@
 discord.py
 streamlink
 requests
+dnspython
+pymongo
