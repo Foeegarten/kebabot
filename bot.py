@@ -56,7 +56,6 @@ async def on_member_join(member):
     }
     if collection.count_documents({"_id":member.id})==0:
         collection.insert_one(post)
-    await send_message(826967373432619047,f"{member.name} зашел")
 @client.listen('on_member_remove')
 async def on_member_remove(member):
     await send_message(826967373432619047,f"{member.name} вышел")
