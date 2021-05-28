@@ -12,11 +12,18 @@ onlstream_ = False
 async def send_message(channel_id: int,msg):
     channel = client.get_channel(channel_id)
     await channel.send(msg)
+def health():
+    global health1 
+    health1 = 100
+    global health2
+    health2 = 100
+
 phrases = ['@everyone оо нихуя там кебабобка подрубил все бегом смотреть https://wasd.tv/kebabobka ','@everyone Ready steady хуй на блюде https://wasd.tv/kebabobka','@everyone идем массово чалавать песок https://wasd.tv/kebabobka','@everyone Эйбан рот ето подруб ода ода ода https://wasd.tv/kebabobka','@everyone Пацаны пацаны эй https://wasd.tv/kebabobka',
 '@everyone Фиксируем прибыль https://wasd.tv/kebabobka ','@everyone Че тааааам https://wasd.tv/kebabobka','@everyone Че такой серьезный? - улыбнулся - воооо)))) https://wasd.tv/kebabobka','@everyone Оаоаоаоао ммммм подруб мммммм https://wasd.tv/kebabobka','@everyone Я...ммм...пук...подр....подруб....мммм....пук ... https://wasd.tv/kebabobka','@everyone Скука падлы покой дуры мы фанаты подруба кебабуры хдхдхдхдддд https://wasd.tv/kebabobka',
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
+    health()
     print('bot is ready')
     while True:
         try:
@@ -43,6 +50,18 @@ async def clear(ctx, amount: int):
         await ctx.channel.purge(limit=amount)
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
+@client.command()
+async def attack(ctx,*,member:discord.Member=None):
+     choose = random.choice(1,2)
+     if choose ==1:
+         health1 -= random.randint(0,40)
+         await ctx.send(f'Вы пропустили удар ваше здоровье равно {health1}')
+     else:
+        health2 -= random.randint(0,40)
+        await ctx.send(f'Вы успешно ударили {member} и у него теперь {health2} здоровья')
+
+
+
 @client.command()
 async def info(ctx,*,member:discord.Member=None):
     if not member:
