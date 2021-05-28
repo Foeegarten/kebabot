@@ -73,20 +73,21 @@ async def clear(ctx, amount: int):
 async def slap(ctx,*,member:discord.Member=None):
     ydata = collection.find_one({"_id":ctx.message.author.id})
     data = collection.find_one({"_id":member.id})
-    choice = random.randint(1,2)
+    choice = random.randint(0,10)
     hit = random.randint(0,40)
-    if choice == 1:
-        if data['health'] >0:
-
+    if choice < 7:
+        if hit>100-data['health']:
+            hit = random.randint(0,100-data['health']
             collection.update_one({"_id":member.id},
                 {"$set":{"health":data["health"]-hit}})
             await ctx.send(f"Вы шлепнули {member} по жопке и нанесли {hit} урона")
+            await ctx.send(f"У {member} теперь {data['health'] хп}"
         else:
             await ctx.send('Ваш противник уже мертвый')
         
     else:
-        if ydata['health']>0:
-
+        if hit>100-ydata['health']:
+            hit = random.randint(0,100-ydata['health'])
             collection.update_one({"_id":ctx.message.author.id},
                 {"$set":{"health":ydata["health"]-hit}})
             await ctx.send(f"Замахиваясь по жопке {member} вы промахнулись и попали по своей и нанесли себе {hit} урона")
