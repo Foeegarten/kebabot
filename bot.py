@@ -49,11 +49,11 @@ async def clear(ctx, amount: int):
 async def attack(ctx,*,member:discord.Member=None):
     health1=100
     health2=100
-     choose = random.randint(1,2)
-     if choose ==1:
-         health1 -= random.randint(0,40)
-         await ctx.send(f'Вы пропустили удар ваше здоровье равно {health1}')
-     else:
+    choose = random.randint(1,2)
+    if choose ==1:
+        health1 -= random.randint(0,40)
+        await ctx.send(f'Вы пропустили удар ваше здоровье равно {health1}')
+    else:
         health2 -= random.randint(0,40)
         await ctx.send(f'Вы успешно ударили {member} и у него теперь {health2} здоровья')
 
