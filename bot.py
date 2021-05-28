@@ -69,7 +69,7 @@ async def clear(ctx, amount: int):
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
 @client.command()
-@cooldown(1,60,BucketType.user)
+@cooldown(1,30,BucketType.user)
 async def slap(ctx,*,member:discord.Member=None):
     ydata = collection.find_one({"_id":ctx.message.author.id})
     data = collection.find_one({"_id":member.id})
@@ -77,7 +77,7 @@ async def slap(ctx,*,member:discord.Member=None):
     hit = random.randint(0,40)
     if choice < 7:
         if hit>100-data['health']:
-            hit = random.randint(0,100-data['health']
+            hit = random.randint(0,100-data['health'])
             collection.update_one({"_id":member.id},
                 {"$set":{"health":data["health"]-hit}})
             await ctx.send(f"Вы шлепнули {member} по жопке и нанесли {hit} урона")
