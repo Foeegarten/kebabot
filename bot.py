@@ -1,4 +1,5 @@
 import discord,time as t,streamlink,asyncio,re,random,os
+from pymongo import mongo_client
 from discord import client
 from discord.ext.commands.core import cooldown
 from discord.ext import commands
@@ -6,6 +7,14 @@ from discord.ext.commands.errors import CheckFailure, MissingPermissions
 from streamlink import PluginError
 from typing import Optional
 from discord.utils import get
+import pymongo
+from pymongo import MongoClient
+from pprint import pprint
+from discord.ext.commands import cooldown,BucketType,MissingRequiredArgument,CommandOnCooldown
+
+cluster = pymongo.MongoClient("mongodb+srv://foeegarten:agranat2314A@cluster0.ocpqw.mongodb.net/dbkeba?retryWrites=true&w=majority")
+db = cluster.test
+collection = cluster.dbkeba.health
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
 url = 'https://wasd.tv/kebabobka'
 onlstream_ = False
@@ -17,8 +26,14 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
-    health1=100
-    health2=100
+    for guild in client.guilds:
+        for member in guild.members:
+            post={
+                "_id": member.id,
+                "health":100,
+                }
+            if collection.count_documents({"_id":member.id})==0:
+                collection.insert_one(post)
     print('bot is ready')
     while True:
         try:
@@ -33,6 +48,14 @@ async def ready():
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
+@client.listen('on_member_join')
+async def on_member_join(member):
+    post={
+    "_id": member.id,
+    "health":100
+    }
+    if collection.count_documents({"_id":member.id})==0:
+        collection.insert_one(post)
 @client.listen('on_message')
 async def on_message(message):
     if '<:nails:839113505713553408>' in message.content:
@@ -46,18 +69,55 @@ async def clear(ctx, amount: int):
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
 @client.command()
-async def attack(ctx,*,member:discord.Member=None):
-    health1=100
-    health2=100
-    choose = random.randint(1,2)
-    if choose ==1:
-        health1 -= random.randint(0,40)
-        await ctx.send(f'Вы пропустили удар ваше здоровье равно {health1}')
+@cooldown(1,60,BucketType.user)
+async def slap(ctx,*,member:discord.Member=None):
+    ydata = collection.find_one({"_id":ctx.message.author.id})
+    data = collection.find_one({"_id":member.id})
+    choice = random.randint(1,2)
+    hit = random.randint(0,40)
+    if choice == 1:
+        if data['health'] >0:
+
+            collection.update_one({"_id":member.id},
+                {"$set":{"health":data["health"]-hit}})
+            await ctx.send(f"Вы шлепнули {member} по жопке и нанесли {hit} урона")
+        else:
+            await ctx.send('Ваш противник уже мертвый')
+        
     else:
-        health2 -= random.randint(0,40)
-        await ctx.send(f'Вы успешно ударили {member} и у него теперь {health2} здоровья')
+        if ydata['health']>0:
 
+            collection.update_one({"_id":ctx.message.author.id},
+                {"$set":{"health":ydata["health"]-hit}})
+            await ctx.send(f"Замахиваясь по жопке {member} вы промахнулись и попали по своей и нанесли себе {hit} урона")
+        else:
+            await ctx.send('Вы мертвы')
+@client.command()
+async def health(ctx):
+    ydata = collection.find_one({"_id":ctx.message.author.id})
+    await ctx.send(f"У вас {ydata['health']} здоровья")
 
+@client.command()
+@cooldown(1,120,BucketType.user)
+async def heal(ctx):
+    ydata = collection.find_one({"_id":ctx.message.author.id})
+    
+    healint = random.randint(1,30)
+    if ydata['health']+healint >100:
+        healint = random.randint(0,100-ydata['health'])
+        collection.update_one({"_id":ctx.message.author.id},
+            {'$set':{"health":ydata['health']+healint}})
+        await ctx.send(f"Вы отхилили себе здоровье в размере {healint} единиц")
+        
+    else:
+        collection.update_one({"_id":ctx.message.author.id},
+            {'$set':{"health":ydata['health']+healint}})
+        await ctx.send(f"Вы отхилили себе здоровье в размере {healint} единиц")
+@client.listen('on_command_error')
+async def on_command_error(ctx,exc):
+    if isinstance(exc, CommandOnCooldown):
+        await ctx.send('Еще не прошел кулдаун для данной команды')
+    
 
 @client.command()
 async def info(ctx,member:discord.Member=None):
