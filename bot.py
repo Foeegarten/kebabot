@@ -1,3 +1,4 @@
+  
 import discord,time as t,streamlink,asyncio,re,random,os
 from pymongo import mongo_client
 from discord import client
@@ -8,7 +9,7 @@ from streamlink import PluginError
 from typing import Optional
 from discord.utils import get
 import pymongo
-from pymongo import MongoClient
+from pymongo import MongoClient,ASCENDING, DESCENDING
 from pprint import pprint
 from discord.ext.commands import cooldown,BucketType,MissingRequiredArgument,CommandOnCooldown
 
@@ -91,9 +92,20 @@ async def slap(ctx,*,member:discord.Member=None):
         await ctx.send(embed=embed)
         raise Exception('dead')
     if choice >= 4:
+        choice_=random.randint(1,100)
+        if choice_>=1 and choice_<35:
+            hit = random.randint(1,40)
+        elif choice_>=35 and choice_<70:
+            hit = random.randint(40,60)
+        elif choice_>=70 and choice_<95:
+            hit = random.randint(60,80)
+        elif choice_>=95 and choice_<=100:
+            hit= data['health']
+        if hit>data['health']:
+            hit=data['health']
         collection.update_one({"_id":ctx.message.author.id},
             {"$set":{"points":hit}})
-        hit = random.randint(0,data['health'])
+
         collection.update_one({"_id":member.id},
             {"$set":{"health":data["health"]-hit}})
         embed=discord.Embed(title=" ",colour=member.colour)
@@ -101,6 +113,17 @@ async def slap(ctx,*,member:discord.Member=None):
         embed.add_field(name="Поинты",value=f"Вы получили {hit} очков")
         await ctx.send(embed=embed)
     else:
+        choice_=random.randint(1,100)
+        if choice_>=1 and choice_<35:
+            hit = random.randint(1,40)
+        elif choice_>=35 and choice_<70:
+            hit = random.randint(40,60)
+        elif choice_>=70 and choice_<95:
+            hit = random.randint(60,80)
+        elif choice_>=95 and choice_<=100:
+            hit= data['health']
+        if hit>ydata['health']:
+            hit=ydata['health']
         hit = random.randint(0,ydata['health'])
         collection.update_one({"_id":ctx.message.author.id},
             {"$set":{"health":ydata["health"]-hit}})
@@ -118,23 +141,31 @@ async def points(ctx,*,member:discord.Member=None):
     data = collection.find_one({"_id":member.id})
     await ctx.send(f"У {member.display_name} {data['points']} очков")
 @client.command()
-@cooldown(1,120,BucketType.user)
-async def heal(ctx):
-    ydata = collection.find_one({"_id":ctx.message.author.id})
-    healint = random.randint(1,30)
+@cooldown(1,600,BucketType.user)
+async def heal(ctx,*,member:discord.Member=None):
+    ydata = collection.find_one({"_id":member.id})
+    choice_=random.randint(1,100)
+    if choice_>=1 and choice_<35:
+        healint = random.randint(1,40)
+    elif choice_>=35 and choice_<70:
+        healint = random.randint(40,60)
+    elif choice_>=70 and choice_<95:
+        healint = random.randint(60,80)
+    elif choice_>=95 and choice_<=100:
+            healint= 100-ydata['health']
     if ydata['health']+healint >100:
         healint = random.randint(0,100-ydata['health'])
-        collection.update_one({"_id":ctx.message.author.id},
+        collection.update_one({"_id":member.id},
             {'$set':{"health":ydata['health']+healint}})
         embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
-        embed.add_field(name='Здоровье',value=f"Вы отхилили себе здоровье в размере {healint} единиц")
+        embed.add_field(name='Здоровье',value=f"Вы отхилили {member.display_name} здоровье в размере {healint} единиц")
         await ctx.send(embed=embed)
         
     else:
-        collection.update_one({"_id":ctx.message.author.id},
+        collection.update_one({"_id":member.id},
             {'$set':{"health":ydata['health']+healint}})
         embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
-        embed.add_field(name='Здоровье',value=f"Вы отхилили себе здоровье в размере {healint} единиц")
+        embed.add_field(name='Здоровье',value=f"Вы отхилили {member.display_name} здоровье в размере {healint} единиц")
         await ctx.send(embed=embed)
 @client.listen('on_command_error')
 async def on_command_error(ctx,exc):
@@ -147,6 +178,18 @@ async def on_command_error(ctx,exc):
 async def avatar(ctx, *,  avamember : discord.Member=None):
     userAvatarUrl = avamember.avatar_url
     await ctx.send(userAvatarUrl)
+@client.command()
+async def top(ctx):
+    spisok=[]
+    for guild in client.guilds:
+        for member in guild.members:
+            data = collection.find_one({"_id":member.id})
+            spisok.append(data['points'])
+    spisok = set(spisok)
+    spisok=sorted(spisok,reverse=True)
+    for x in range(10):
+        pointy = collection.find_one({"points":spisok[x]})
+        await ctx.send(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
 @client.command()
 async def info(ctx,member:discord.Member=None):
     if not member:
