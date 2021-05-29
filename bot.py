@@ -104,7 +104,7 @@ async def slap(ctx,*,member:discord.Member=None):
         if hit>data['health']:
             hit=data['health']
         collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"points":hit}})
+            {"$set":{"points":data['points']+hit}})
 
         collection.update_one({"_id":member.id},
             {"$set":{"health":data["health"]-hit}})
