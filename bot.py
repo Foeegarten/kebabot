@@ -116,7 +116,7 @@ async def heal(ctx):
     ydata = collection.find_one({"_id":ctx.message.author.id})
     healint = random.randint(1,30)
     if ydata['health']+healint >100:
-        healint = random.randint(0,ydata['health'])
+        healint = random.randint(0,100-ydata['health'])
         collection.update_one({"_id":ctx.message.author.id},
             {'$set':{"health":ydata['health']+healint}})
         embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
