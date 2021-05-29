@@ -169,7 +169,7 @@ async def heal(ctx,*,member:discord.Member=None):
 @client.listen('on_command_error')
 async def on_command_error(ctx,exc):
     if isinstance(exc, CommandOnCooldown):
-        msg = ' Еще не прошел кулдаун, попробуйте через {:.2f}s'.format(error.retry_after)
+        msg = ' Еще не прошел кулдаун, попробуйте через {:.2f}s'.format(exc.retry_after)
         embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
         embed.add_field(name='Ошибка',value=msg)
         await ctx.send(embed=embed)
