@@ -98,7 +98,7 @@ async def slap(ctx,*,member:discord.Member=None):
             {"$set":{"health":data["health"]-hit}})
         embed=discord.Embed(title=" ",colour=member.colour)
         embed.add_field(name="Атака",value=f"Вы шлепнули {member.name} по жопке и нанесли **{hit}** урона")
-        embed.add_field(name="",value=f"Вы получили {hit} очков")
+        embed.add_field(name="Поинты",value=f"Вы получили {hit} очков")
         await ctx.send(embed=embed)
     else:
         hit = random.randint(0,ydata['health'])
