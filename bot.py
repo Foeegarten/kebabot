@@ -104,10 +104,10 @@ async def slap(ctx,*,member:discord.Member=None):
         embed.add_field(name="Атака",value=f"Замахиваясь по жопке {member.name} вы промахнулись и попали по своей и нанесли себе **{hit}** урона")
         await ctx.send(embed=embed)
 @client.command()
-async def health(ctx):
-    ydata = collection.find_one({"_id":ctx.message.author.id})
+async def health(ctx,*,member:discord.Member=None):
+    ydata = collection.find_one({"_id":member.id})
     embed=discord.Embed(title=" ",colour=ctx.message.author.colour)
-    embed.add_field(name='Здоровье', value=f"У вас {ydata['health']} здоровья")
+    embed.add_field(name='Здоровье', value=f"У {member.name} {ydata['health']} здоровья")
     await ctx.send(embed=embed)
 
 @client.command()
