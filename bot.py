@@ -31,6 +31,7 @@ async def ready():
             post={
                 "_id": member.id,
                 "health":100,
+                "points":0
                 }
             if collection.count_documents({"_id":member.id})==0:
                 collection.insert_one(post)
@@ -52,7 +53,8 @@ async def ready():
 async def on_member_join(member):
     post={
     "_id": member.id,
-    "health":100
+    "health":100,
+    "points":0
     }
     if collection.count_documents({"_id":member.id})==0:
         collection.insert_one(post)
@@ -72,7 +74,6 @@ async def clear(ctx, amount: int):
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
 @client.command()
-@cooldown(1,15,BucketType.user)
 async def slap(ctx,*,member:discord.Member=None):
     
     ydata = collection.find_one({"_id":ctx.message.author.id})
@@ -89,12 +90,15 @@ async def slap(ctx,*,member:discord.Member=None):
         embed.add_field(name='Ошибка',value='Ваш соперник мертв, лежачего не бьют!')
         await ctx.send(embed=embed)
         raise Exception('dead')
-    if choice < 7:
+    if choice >= 4:
+        collection.update_one({"_id":ctx.message.author.id},
+            {"$set":{"points":hit}})
         hit = random.randint(0,data['health'])
         collection.update_one({"_id":member.id},
             {"$set":{"health":data["health"]-hit}})
         embed=discord.Embed(title=" ",colour=member.colour)
         embed.add_field(name="Атака",value=f"Вы шлепнули {member.name} по жопке и нанесли **{hit}** урона")
+        embed.add_field(name="",value=f"Вы получили {hit} очков")
         await ctx.send(embed=embed)
     else:
         hit = random.randint(0,ydata['health'])
@@ -109,7 +113,10 @@ async def health(ctx,*,member:discord.Member=None):
     embed=discord.Embed(title=" ",colour=ctx.message.author.colour)
     embed.add_field(name='Здоровье', value=f"У {member.name} {ydata['health']} здоровья")
     await ctx.send(embed=embed)
-
+@client.command()
+async def points(ctx,*,member:discord.Member=None):
+    data = collection.find_one({"_id":member.id})
+    await ctx.send(f"У {member.display_name} {data['points']} очков")
 @client.command()
 @cooldown(1,120,BucketType.user)
 async def heal(ctx):
@@ -136,7 +143,10 @@ async def on_command_error(ctx,exc):
         embed.add_field(name='Ошибка',value='Еще не прошел кулдаун для данной команды')
         await ctx.send(embed=embed)
     
-
+@client.command()
+async def avatar(ctx, *,  avamember : discord.Member=None):
+    userAvatarUrl = avamember.avatar_url
+    await ctx.send(userAvatarUrl)
 @client.command()
 async def info(ctx,member:discord.Member=None):
     if not member:
