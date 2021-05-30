@@ -3,3 +3,4 @@ streamlink
 requests
 dnspython
 pymongo
+bs4
