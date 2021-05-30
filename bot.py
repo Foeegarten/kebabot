@@ -9,7 +9,7 @@ from discord.ext.commands.errors import CheckFailure, MissingPermissions
 from streamlink import PluginError
 from typing import Optional
 from discord.utils import get
-import pymongo
+import pymongo,math
 from pymongo import MongoClient,ASCENDING, DESCENDING
 from pprint import pprint
 from discord.ext.commands import cooldown,BucketType,MissingRequiredArgument,CommandOnCooldown
@@ -108,13 +108,13 @@ async def slap(ctx,*,member:discord.Member=None):
         if hit>data['health']:
             hit=data['health']
         collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"points":ydata['points']+hit}})
+            {"$set":{"points":ydata['points']+math.floor(hit/2)}})
 
         collection.update_one({"_id":member.id},
-            {"$set":{"health":data["health"]-(hit/2)}})
+            {"$set":{"health":data["health"]-hit}})
         embed=discord.Embed(title=" ",colour=member.colour)
         embed.add_field(name="Атака",value=f"Вы шлепнули {member.name} по жопке и нанесли **{hit}** урона")
-        embed.add_field(name="Поинты",value=f"Вы получили {hit/2} очков")
+        embed.add_field(name="Поинты",value=f"Вы получили {math.floor(hit/2)} очков")
         await ctx.send(embed=embed)
     else:
         choice_=random.randint(1,100)
