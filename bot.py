@@ -1,5 +1,6 @@
-  
 import discord,time as t,streamlink,asyncio,re,random,os
+from discord import member
+from discord import role
 from discord.embeds import EmptyEmbed
 from pymongo import mongo_client
 from discord import client
@@ -53,6 +54,34 @@ async def ready():
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
+@client.listen('on_raw_reaction_add')
+async def on_raw_reaction_add(payload):
+    message_id = payload.message_id
+    if message_id == 848688425389129729:
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g:g.id == guild_id,client.guilds)
+        if payload.emoji.name == 'Hi':
+            role = discord.utils.get(guild.roles,name='Клерк')
+        if role is not None:
+            member = discord.utils.find(lambda m:m.id==payload.user_id,guild.members)
+            if member is not None:
+                await member.add_roles(role)
+@client.listen('on_raw_reaction_remove')
+async def on_raw_reaction_remove(payload):
+    message_id = payload.message_id
+    if message_id == 848688425389129729:
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g:g.id == guild_id,client.guilds)
+        if payload.emoji.name == 'Hi':
+            role = discord.utils.get(guild.roles,name='Клерк')
+        if role is not None:
+            member = discord.utils.find(lambda m:m.id==payload.user_id,guild.members)
+            if member is not None:
+                await member.remove_roles(role)
+            
+
+
+
 @client.command()
 async def anek(ctx):
     channel = discord.utils.get(client.get_all_channels(), id=830525102243971133)
