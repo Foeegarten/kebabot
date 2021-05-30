@@ -33,7 +33,7 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 @client.listen('on_ready')
 async def ready():
     z=0
-    for _ in range(1500):
+    for _ in range(10):
         z=z+1
         s=requests.get('http://anekdotme.ru/random')
         b=bs4.BeautifulSoup(s.text, "html.parser")
