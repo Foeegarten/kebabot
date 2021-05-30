@@ -78,7 +78,7 @@ async def clear(ctx, amount: int):
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
 @client.command()
-@cooldown(1,20,BucketType.user)
+@cooldown(1,40,BucketType.user)
 async def slap(ctx,*,member:discord.Member=None):
     
     ydata = collection.find_one({"_id":ctx.message.author.id})
@@ -111,10 +111,10 @@ async def slap(ctx,*,member:discord.Member=None):
             {"$set":{"points":ydata['points']+hit}})
 
         collection.update_one({"_id":member.id},
-            {"$set":{"health":data["health"]-hit}})
+            {"$set":{"health":data["health"]-(hit/2)}})
         embed=discord.Embed(title=" ",colour=member.colour)
         embed.add_field(name="Атака",value=f"Вы шлепнули {member.name} по жопке и нанесли **{hit}** урона")
-        embed.add_field(name="Поинты",value=f"Вы получили {hit} очков")
+        embed.add_field(name="Поинты",value=f"Вы получили {hit/2} очков")
         await ctx.send(embed=embed)
     else:
         choice_=random.randint(1,100)
@@ -145,7 +145,7 @@ async def points(ctx,*,member:discord.Member=None):
     data = collection.find_one({"_id":member.id})
     await ctx.send(f"У {member.display_name} {data['points']} очков")
 @client.command()
-@cooldown(1,120,BucketType.user)
+@cooldown(1,300,BucketType.user)
 async def heal(ctx,*,member:discord.Member=None):
     ydata = collection.find_one({"_id":member.id})
     choice_=random.randint(1,100)
