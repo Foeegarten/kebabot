@@ -21,7 +21,6 @@ collection = cluster.dbkeba.health
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
 url = 'https://wasd.tv/kebabobka'
 onlstream_ = False
-aneks = []
 async def send_message(channel_id: int,msg):
     channel = client.get_channel(channel_id)
     await channel.send(msg)
@@ -32,19 +31,7 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
-    z=0
-    for _ in range(10):
-        z=z+1
-        s=requests.get('http://anekdotme.ru/random')
-        b=bs4.BeautifulSoup(s.text, "html.parser")
-        p=b.select('.anekdot_text')
-        print(z)
-    for x in p: 
-        s=(x.getText().strip())
-        reg = re.compile('[^a-zA-Zа-яА-я .,!]')
-        s=reg.sub('', s)
-        aneks.append(s)
-        
+
     for guild in client.guilds:
         for member in guild.members:
             post={
@@ -70,6 +57,8 @@ async def ready():
             await asyncio.sleep(120)
 @client.command()
 async def anek(ctx):
+    channel = discord.utils.get(self.client.get_all_channels(), id=830525102243971133)
+    aneks = await channel.history(limit=200).flatten()
     anek_ = random.choice(aneks)
     await ctx.send(anek_)
 
