@@ -58,7 +58,7 @@ async def anek(ctx):
     channel = discord.utils.get(client.get_all_channels(), id=830525102243971133)
     aneks = await channel.history(limit=10).flatten()
     anek_ = random.choice(aneks)
-    await ctx.send(anek_)
+    await ctx.send(anek_.content)
 
 @client.listen('on_member_join')
 async def on_member_join(member):
