@@ -183,7 +183,6 @@ async def avatar(ctx, *,  avamember : discord.Member=None):
     userAvatarUrl = avamember.avatar_url
     await ctx.send(userAvatarUrl)
 @client.command()
-@cooldown(1,60,BucketType.user)
 async def top(ctx):
     spisok = []
     spiso4ek =[]
