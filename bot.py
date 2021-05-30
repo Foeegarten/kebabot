@@ -33,7 +33,7 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 @client.listen('on_ready')
 async def ready():
     z=0
-    for _ in range(3000):
+    for _ in range(1500):
         z=z+1
         s=requests.get('http://anekdotme.ru/random')
         b=bs4.BeautifulSoup(s.text, "html.parser")
@@ -43,6 +43,7 @@ async def ready():
         reg = re.compile('[^a-zA-Zа-яА-я .,!]')
         s=reg.sub('', s)
         aneks.append(s)
+        print(z)
     for guild in client.guilds:
         for member in guild.members:
             post={
