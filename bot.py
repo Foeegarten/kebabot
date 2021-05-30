@@ -38,12 +38,13 @@ async def ready():
         s=requests.get('http://anekdotme.ru/random')
         b=bs4.BeautifulSoup(s.text, "html.parser")
         p=b.select('.anekdot_text')
+        print(z)
     for x in p: 
         s=(x.getText().strip())
         reg = re.compile('[^a-zA-Zа-яА-я .,!]')
         s=reg.sub('', s)
         aneks.append(s)
-        print(z)
+        
     for guild in client.guilds:
         for member in guild.members:
             post={
