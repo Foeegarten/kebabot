@@ -1,5 +1,5 @@
-  
 import discord,time as t,streamlink,asyncio,re,random,os
+from discord.embeds import EmptyEmbed
 from pymongo import mongo_client
 from discord import client
 from discord.ext.commands.core import cooldown
@@ -22,6 +22,8 @@ onlstream_ = False
 async def send_message(channel_id: int,msg):
     channel = client.get_channel(channel_id)
     await channel.send(msg)
+
+
 phrases = ['@everyone оо нихуя там кебабобка подрубил все бегом смотреть https://wasd.tv/kebabobka ','@everyone Ready steady хуй на блюде https://wasd.tv/kebabobka','@everyone идем массово чалавать песок https://wasd.tv/kebabobka','@everyone Эйбан рот ето подруб ода ода ода https://wasd.tv/kebabobka','@everyone Пацаны пацаны эй https://wasd.tv/kebabobka',
 '@everyone Фиксируем прибыль https://wasd.tv/kebabobka ','@everyone Че тааааам https://wasd.tv/kebabobka','@everyone Че такой серьезный? - улыбнулся - воооо)))) https://wasd.tv/kebabobka','@everyone Оаоаоаоао ммммм подруб мммммм https://wasd.tv/kebabobka','@everyone Я...ммм...пук...подр....подруб....мммм....пук ... https://wasd.tv/kebabobka','@everyone Скука падлы покой дуры мы фанаты подруба кебабуры хдхдхдхдддд https://wasd.tv/kebabobka',
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
@@ -76,6 +78,7 @@ async def clear(ctx, amount: int):
         ctx.send('Вы не администратор')
 @client.command()
 async def slap(ctx,*,member:discord.Member=None):
+    
     ydata = collection.find_one({"_id":ctx.message.author.id})
     data = collection.find_one({"_id":member.id})
     choice = random.randint(0,10)
@@ -103,7 +106,7 @@ async def slap(ctx,*,member:discord.Member=None):
         if hit>data['health']:
             hit=data['health']
         collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"points":ydata['points']+hit}})
+            {"$set":{"points":hit}})
 
         collection.update_one({"_id":member.id},
             {"$set":{"health":data["health"]-hit}})
@@ -169,9 +172,8 @@ async def heal(ctx,*,member:discord.Member=None):
 @client.listen('on_command_error')
 async def on_command_error(ctx,exc):
     if isinstance(exc, CommandOnCooldown):
-        msg = ' Еще не прошел кулдаун, попробуйте через {:.2f}s'.format(exc.retry_after)
         embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
-        embed.add_field(name='Ошибка',value=msg)
+        embed.add_field(name='Ошибка',value='Еще не прошел кулдаун для данной команды')
         await ctx.send(embed=embed)
     
 @client.command()
@@ -179,8 +181,11 @@ async def avatar(ctx, *,  avamember : discord.Member=None):
     userAvatarUrl = avamember.avatar_url
     await ctx.send(userAvatarUrl)
 @client.command()
+@cooldown(1,60,BucketType.user)
 async def top(ctx):
-    spisok=[]
+    await ctx.send('Подождите некоторое время')
+    spisok = []
+    spiso4ek =[]
     for guild in client.guilds:
         for member in guild.members:
             data = collection.find_one({"_id":member.id})
@@ -189,7 +194,8 @@ async def top(ctx):
     spisok=sorted(spisok,reverse=True)
     for x in range(10):
         pointy = collection.find_one({"points":spisok[x]})
-        await ctx.send(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
+        spiso4ek.append(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
+    await ctx.send( '\n'.join(spiso4ek))
 @client.command()
 async def info(ctx,member:discord.Member=None):
     if not member:
