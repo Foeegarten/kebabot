@@ -31,7 +31,7 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
-    channel = discord.utils.get(self.client.get_all_channels(), id=830525102243971133)
+    channel = discord.utils.get(client.get_all_channels(), id=830525102243971133)
     aneks = await channel.history(limit=200).flatten()
     for guild in client.guilds:
         for member in guild.members:
