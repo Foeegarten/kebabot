@@ -107,7 +107,7 @@ async def slap(ctx,*,member:discord.Member=None):
         if hit>data['health']:
             hit=data['health']
         collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"points":hit}})
+            {"$set":{"points":ydata['points']+hit}})
 
         collection.update_one({"_id":member.id},
             {"$set":{"health":data["health"]-hit}})
@@ -144,7 +144,7 @@ async def points(ctx,*,member:discord.Member=None):
     data = collection.find_one({"_id":member.id})
     await ctx.send(f"У {member.display_name} {data['points']} очков")
 @client.command()
-@cooldown(1,600,BucketType.user)
+@cooldown(1,300,BucketType.user)
 async def heal(ctx,*,member:discord.Member=None):
     ydata = collection.find_one({"_id":member.id})
     choice_=random.randint(1,100)
