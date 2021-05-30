@@ -24,15 +24,12 @@ onlstream_ = False
 async def send_message(channel_id: int,msg):
     channel = client.get_channel(channel_id)
     await channel.send(msg)
-aneks=[]
 
 phrases = ['@everyone оо нихуя там кебабобка подрубил все бегом смотреть https://wasd.tv/kebabobka ','@everyone Ready steady хуй на блюде https://wasd.tv/kebabobka','@everyone идем массово чалавать песок https://wasd.tv/kebabobka','@everyone Эйбан рот ето подруб ода ода ода https://wasd.tv/kebabobka','@everyone Пацаны пацаны эй https://wasd.tv/kebabobka',
 '@everyone Фиксируем прибыль https://wasd.tv/kebabobka ','@everyone Че тааааам https://wasd.tv/kebabobka','@everyone Че такой серьезный? - улыбнулся - воооо)))) https://wasd.tv/kebabobka','@everyone Оаоаоаоао ммммм подруб мммммм https://wasd.tv/kebabobka','@everyone Я...ммм...пук...подр....подруб....мммм....пук ... https://wasd.tv/kebabobka','@everyone Скука падлы покой дуры мы фанаты подруба кебабуры хдхдхдхдддд https://wasd.tv/kebabobka',
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
-    channel = discord.utils.get(client.get_all_channels(), id=830525102243971133)
-    aneks = await channel.history(limit=200).flatten()
     for guild in client.guilds:
         for member in guild.members:
             post={
@@ -58,6 +55,8 @@ async def ready():
             await asyncio.sleep(120)
 @client.command()
 async def anek(ctx):
+    channel = discord.utils.get(client.get_all_channels(), id=830525102243971133)
+    aneks = await channel.history(limit=10).flatten()
     anek_ = random.choice(aneks)
     await ctx.send(anek_)
 
