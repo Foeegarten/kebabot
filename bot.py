@@ -185,10 +185,8 @@ async def avatar(ctx, *,  avamember : discord.Member=None):
 @client.command()
 @cooldown(1,60,BucketType.user)
 async def top(ctx):
-    await ctx.send('Подождите некоторое время')
     spisok = []
     spiso4ek =[]
-    embed = discord.Embed(title='Топ 10 ',colour=ctx.message.author.colour)
     for guild in client.guilds:
         for member in guild.members:
             data = collection.find_one({"_id":member.id})
@@ -198,8 +196,7 @@ async def top(ctx):
     for x in range(10):
         pointy = collection.find_one({"points":spisok[x]})
         spiso4ek.append(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
-    embed.add_field(name=' ',value='\n'.join(spiso4ek))
-    await ctx.send(embed=embed)
+    await ctx.send( '\n'.join(spiso4ek))
 @client.command()
 async def info(ctx,member:discord.Member=None):
     if not member:
