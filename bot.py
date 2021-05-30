@@ -190,8 +190,8 @@ async def top(ctx):
         for member in guild.members:
             data = collection.find_one({"_id":member.id})
             spisok.append(data['points'])
-    spisok = set(spisok)
     spisok=sorted(spisok,reverse=True)
+    spisok = set(spisok)
     for x in range(10):
         pointy = collection.find_one({"points":spisok[x]})
         spiso4ek.append(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
