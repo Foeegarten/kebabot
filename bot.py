@@ -56,7 +56,7 @@ async def ready():
 @client.command()
 async def anek(ctx):
     channel = discord.utils.get(client.get_all_channels(), id=830525102243971133)
-    aneks = await channel.history(limit=50).flatten()
+    aneks = await channel.history().flatten()
     anek_ = random.choice(aneks)
     await ctx.send(anek_.content)
 
