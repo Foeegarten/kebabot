@@ -9,17 +9,19 @@ from discord.ext.commands.errors import CheckFailure, MissingPermissions
 from streamlink import PluginError
 from typing import Optional
 from discord.utils import get
-import pymongo,math
+import pymongo
 from pymongo import MongoClient,ASCENDING, DESCENDING
 from pprint import pprint
 from discord.ext.commands import cooldown,BucketType,MissingRequiredArgument,CommandOnCooldown
-
+import requests, bs4
+import re
 cluster = pymongo.MongoClient("mongodb+srv://foeegarten:agranat2314A@cluster0.ocpqw.mongodb.net/dbkeba?retryWrites=true&w=majority")
 db = cluster.test
 collection = cluster.dbkeba.health
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
 url = 'https://wasd.tv/kebabobka'
 onlstream_ = False
+aneks = []
 async def send_message(channel_id: int,msg):
     channel = client.get_channel(channel_id)
     await channel.send(msg)
@@ -30,6 +32,17 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
+    z=0
+    for _ in range(3000):
+        z=z+1
+        s=requests.get('http://anekdotme.ru/random')
+        b=bs4.BeautifulSoup(s.text, "html.parser")
+        p=b.select('.anekdot_text')
+    for x in p: 
+        s=(x.getText().strip())
+        reg = re.compile('[^a-zA-Zа-яА-я .,!]')
+        s=reg.sub('', s)
+        aneks.append(s)
     for guild in client.guilds:
         for member in guild.members:
             post={
@@ -53,6 +66,11 @@ async def ready():
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
+@client.command()
+async def anek(ctx):
+    anek_ = random.choice(aneks)
+    await ctx.send(anek_)
+
 @client.listen('on_member_join')
 async def on_member_join(member):
     post={
@@ -78,7 +96,6 @@ async def clear(ctx, amount: int):
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
 @client.command()
-@cooldown(1,40,BucketType.user)
 async def slap(ctx,*,member:discord.Member=None):
     
     ydata = collection.find_one({"_id":ctx.message.author.id})
@@ -108,13 +125,13 @@ async def slap(ctx,*,member:discord.Member=None):
         if hit>data['health']:
             hit=data['health']
         collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"points":ydata['points']+math.floor(hit/2)}})
+            {"$set":{"points":hit}})
 
         collection.update_one({"_id":member.id},
             {"$set":{"health":data["health"]-hit}})
         embed=discord.Embed(title=" ",colour=member.colour)
         embed.add_field(name="Атака",value=f"Вы шлепнули {member.name} по жопке и нанесли **{hit}** урона")
-        embed.add_field(name="Поинты",value=f"Вы получили {math.floor(hit/2)} очков")
+        embed.add_field(name="Поинты",value=f"Вы получили {hit} очков")
         await ctx.send(embed=embed)
     else:
         choice_=random.randint(1,100)
@@ -145,7 +162,7 @@ async def points(ctx,*,member:discord.Member=None):
     data = collection.find_one({"_id":member.id})
     await ctx.send(f"У {member.display_name} {data['points']} очков")
 @client.command()
-@cooldown(1,300,BucketType.user)
+@cooldown(1,600,BucketType.user)
 async def heal(ctx,*,member:discord.Member=None):
     ydata = collection.find_one({"_id":member.id})
     choice_=random.randint(1,100)
@@ -184,9 +201,12 @@ async def avatar(ctx, *,  avamember : discord.Member=None):
     userAvatarUrl = avamember.avatar_url
     await ctx.send(userAvatarUrl)
 @client.command()
+@cooldown(1,60,BucketType.user)
 async def top(ctx):
+    await ctx.send('Подождите некоторое время')
     spisok = []
     spiso4ek =[]
+    embed = discord.Embed(title='Топ 10 ',colour=ctx.message.author.colour)
     for guild in client.guilds:
         for member in guild.members:
             data = collection.find_one({"_id":member.id})
@@ -196,6 +216,7 @@ async def top(ctx):
     for x in range(10):
         pointy = collection.find_one({"points":spisok[x]})
         spiso4ek.append(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
+    embed.add_field(name=' ',value= '\n'.join(spiso4ek))
     await ctx.send( '\n'.join(spiso4ek))
 @client.command()
 async def info(ctx,member:discord.Member=None):
