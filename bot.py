@@ -31,7 +31,8 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
-
+    channel = discord.utils.get(self.client.get_all_channels(), id=830525102243971133)
+    aneks = await channel.history(limit=200).flatten()
     for guild in client.guilds:
         for member in guild.members:
             post={
@@ -57,8 +58,6 @@ async def ready():
             await asyncio.sleep(120)
 @client.command()
 async def anek(ctx):
-    channel = discord.utils.get(self.client.get_all_channels(), id=830525102243971133)
-    aneks = await channel.history(limit=200).flatten()
     anek_ = random.choice(aneks)
     await ctx.send(anek_)
 
