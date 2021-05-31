@@ -219,6 +219,14 @@ async def avatar(ctx, *,  avamember : discord.Member=None):
     userAvatarUrl = avamember.avatar_url
     await ctx.send(userAvatarUrl)
 @client.command()
+@commands.has_permissions(administrator=True,manage_messages=True)  
+async def reset(ctx):
+    for guild in client.guilds:
+        for member in guild.members:
+            collection.update_one({"_id":member.id},
+                {'$set':{"points":0}})
+     await ctx.send('База данных обнулена успешно')
+@client.command()
 @cooldown(1,60,BucketType.user)
 async def top(ctx):
     await ctx.send('Подождите некоторое время')
