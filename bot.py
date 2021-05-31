@@ -225,7 +225,7 @@ async def reset(ctx):
         for member in guild.members:
             collection.update_one({"_id":member.id},
                 {'$set':{"points":0}})
-     await ctx.send('База данных обнулена успешно')
+    await ctx.send('База данных обнулена успешно')
 @client.command()
 @cooldown(1,60,BucketType.user)
 async def top(ctx):
