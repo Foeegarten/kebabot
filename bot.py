@@ -114,6 +114,7 @@ async def clear(ctx, amount: int):
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
 @client.command()
+@cooldown(1,60,BucketType.user)
 async def slap(ctx,*,member:discord.Member=None):
     
     ydata = collection.find_one({"_id":ctx.message.author.id})
