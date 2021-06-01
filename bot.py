@@ -81,7 +81,7 @@ async def on_raw_reaction_remove(payload):
             
 
 
-
+#
 @client.command()
 async def anek(ctx):
     channel = discord.utils.get(client.get_all_channels(), id=830525102243971133)
