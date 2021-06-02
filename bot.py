@@ -57,7 +57,7 @@ async def ready():
 @client.listen('on_raw_reaction_add')
 async def on_raw_reaction_add(payload):
     message_id = payload.message_id
-    if message_id == 848688425389129729:
+    if message_id == 849558564740530206:
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g:g.id == guild_id,client.guilds)
         if payload.emoji.name == 'Hi':
