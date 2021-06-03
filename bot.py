@@ -57,7 +57,7 @@ async def alive(ctx):
             data = collection.find_one({"_id":member.id})
             if data['health']>0:
                 alive.append(member.display_name)
-     await ctx.send('\n'.join(alive))
+    await ctx.send('\n'.join(alive))
 @bot.event
 async def on_ready():
     for guild in bot.guilds:
