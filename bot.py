@@ -1,27 +1,19 @@
-from discord.ext import commands # Again, we need this imported
 import discord,time as t,streamlink,asyncio,re,random,os
-from discord import member
-from discord import role
 from discord.embeds import EmptyEmbed
-from pymongo import mongo_client
 from discord import client
 from six.moves import urllib
-from discord.ext.commands.core import command, cooldown
+from discord.ext.commands.core import cooldown
 from discord.ext import commands
-from discord.ext.commands.errors import CheckFailure, MissingPermissions
+from discord.ext.commands.errors import  MissingPermissions
 from streamlink import PluginError
-from typing import Optional
 from discord.utils import get
 import pymongo
 from pymongo import MongoClient,ASCENDING, DESCENDING
 from pprint import pprint
-from discord.ext.commands import bot, cooldown,BucketType,MissingRequiredArgument,CommandOnCooldown
-import requests, bs4
+from discord.ext.commands import cooldown,BucketType,CommandOnCooldown
 import re
 password =  urllib.parse.quote_plus(os.getenv('password'))
 cluster = pymongo.MongoClient(f"mongodb+srv://foeegarten:{password}@cluster0.ocpqw.mongodb.net/dbkeba?retryWrites=true&w=majority")
-
-cluster = pymongo.MongoClient(f"mongodb+srv://foeegarten:freakinshop@cluster0.ocpqw.mongodb.net/dbkeba?retryWrites=true&w=majority")
 db = cluster.test
 collection = cluster.dbkeba.health
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
@@ -36,31 +28,35 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
-    for guild in bot.guilds:
+    for guild in client.guilds:
         for member in guild.members:
             post={
                 "_id": member.id,
-            async def ready():
+                "health":100,
+                "points":0
+                }
+            if collection.count_documents({"_id":member.id})==0:
+                collection.insert_one(post)
+    print('bot is ready')
+    while True:
+        try:
+            streams = streamlink.streams(url)
+            onlstream = True
+        except PluginError as err:
             onlstream = False
         if onlstream==True:
             print('[log] stream is online')
             await send_message(826967699082969088,random.choice(phrases))
-            await send_message(841409828470652950,random.choice(phrases))
             await asyncio.sleep(15000)
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
-async def send_message(channel_id: int,msg):
-    channel = client.get_channel(channel_id)
-    await channel.send(msg)
-
 @client.listen('on_raw_reaction_add')
 async def on_raw_reaction_add(payload):
     message_id = payload.message_id
     if message_id == 849558564740530206:
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g:g.id == guild_id,client.guilds)
-        guild = discord.utils.find(lambda g:g.id == guild_id,bot.guilds)
         if payload.emoji.name == 'Hi':
             role = discord.utils.get(guild.roles,name='Клерк')
         if role is not None:
@@ -79,7 +75,7 @@ async def on_raw_reaction_remove(payload):
             member = discord.utils.find(lambda m:m.id==payload.user_id,guild.members)
             if member is not None:
                 await member.remove_roles(role)
-
+            
 
 
 #
@@ -94,8 +90,8 @@ async def anek(ctx):
 async def on_member_join(member):
     post={
     "_id": member.id,
-    "points":0,
-    "health":100
+    "health":100,
+    "points":0
     }
     if collection.count_documents({"_id":member.id})==0:
         collection.insert_one(post)
@@ -117,14 +113,11 @@ async def clear(ctx, amount: int):
 @client.command()
 @cooldown(1,60,BucketType.user)
 async def slap(ctx,*,member:discord.Member=None):
-
+    
     ydata = collection.find_one({"_id":ctx.message.author.id})
     data = collection.find_one({"_id":member.id})
     choice = random.randint(0,10)
     hit = random.randint(0,40)
-    if ctx.message.author.id==member.id:
-        await ctx.send("Вы не можете шлепать себя по попке")
-        raise Exception('self')
     if ydata['health']<=0:
         embed = discord.Embed(title=f"{member.name}",colour=member.colour)
         embed.add_field(name='Ошибка',value='Вы мертвый, восстановите здоровье, иначе вы не сможете атаковать!')
@@ -204,7 +197,7 @@ async def heal(ctx,*,member:discord.Member=None):
         embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
         embed.add_field(name='Здоровье',value=f"Вы отхилили {member.display_name} здоровье в размере {healint} единиц")
         await ctx.send(embed=embed)
-
+        
     else:
         collection.update_one({"_id":member.id},
             {'$set':{"health":ydata['health']+healint}})
@@ -218,7 +211,7 @@ async def on_command_error(ctx,exc):
         embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
         embed.add_field(name='Ошибка',value=msg)
         await ctx.send(embed=embed)
-
+    
 @client.command()
 async def avatar(ctx, *,  avamember : discord.Member=None):
     userAvatarUrl = avamember.avatar_url
