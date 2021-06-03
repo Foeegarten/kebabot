@@ -31,6 +31,24 @@ async def send_message(channel_id: int,msg):
     await channel.send(msg)
 bot = commands.Bot(command_prefix="!")
 bot.load_extension("SomeCommands")
+@bot.command()
+@cooldown(1,60,BucketType.user)
+async def top(ctx):
+    await ctx.send('Подождите некоторое время')
+    spisok = []
+    spiso4ek =[]
+    embed = discord.Embed(title='Топ 10 ',colour=ctx.message.author.colour)
+    for guild in bot.guilds:
+        for member in guild.members:
+            data = collection.find_one({"_id":member.id})
+            spisok.append(data['points'])
+    spisok = set(spisok)
+    spisok=sorted(spisok,reverse=True)
+    for x in range(10):
+        pointy = collection.find_one({"points":spisok[x]})
+        spiso4ek.append(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
+    embed.add_field(name=' ',value= '\n'.join(spiso4ek))
+    await ctx.send( '\n'.join(spiso4ek))
 @bot.event
 async def on_ready():
     for guild in bot.guilds:
