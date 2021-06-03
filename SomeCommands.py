@@ -26,22 +26,6 @@ class SomeCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
     ######################################################################
-    @commands.command()
-    @cooldown(1,60,BucketType.user)
-    async def top(self,ctx):
-        await ctx.send('Подождите некоторое время')
-        spisok = []
-        spiso4ek =[]
-        for guild in bot.guilds:
-            for member in guild.members:
-                data = collection.find_one({"_id":member.id})
-                spisok.append(data['points'])
-        spisok = set(spisok)
-        spisok=sorted(spisok,reverse=True)
-        for x in range(10):
-            pointy = collection.find_one({"points":spisok[x]})
-            spiso4ek.append(f"У {(bot.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
-        await ctx.send( '\n'.join(spiso4ek))
     @commands.command(name="ping")
     async def ping(self, ctx: commands.Context):
         await ctx.send(f"{round(self.bot.latency * 1000)}ms")
@@ -130,15 +114,6 @@ class SomeCommands(commands.Cog):
     async def points(self,ctx,*,member:discord.Member=None):
         data = collection.find_one({"_id":member.id})
         await ctx.send(f"У {member.display_name} {data['points']} очков")
-    @commands.command()
-    async def alive(self,ctx):
-        alive = []
-        for guild in bot.guilds:
-            for member in guild.members:
-                data = collection.find_one({"_id":member.id})
-                if data['health']>0:
-                    alive.append(member.display_name)
-        await ctx.send('\n'.join(alive))
     @commands.command()
     @cooldown(1,60,BucketType.user)
     async def heal(self,ctx,*,member:discord.Member=None):
