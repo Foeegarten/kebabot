@@ -61,7 +61,7 @@ async def anek(ctx):
 
 @client.listen('on_member_join')
 async def on_member_join(member):
-    role = discord.utils.get(guild.roles,id=827141363769278475)
+    role = discord.utils.get(member.guild.roles,id=827141363769278475)
     await member.add_roles(role)
     post={
     "_id": member.id,
