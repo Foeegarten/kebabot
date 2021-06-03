@@ -51,7 +51,7 @@ async def on_ready():
             onlstream = False
         if onlstream==True:
             print('[log] stream is online')
-            await send_message(841409828470652950,random.choice(phrases))
+            await send_message(826967699082969088,random.choice(phrases))
             await asyncio.sleep(15000)
         else:
             print('[log] stream is offline')
@@ -88,4 +88,4 @@ async def on_command_error(ctx,exc):
         embed.add_field(name='Ошибка',value=msg)
         await ctx.send(embed=embed)
 token = os.getenv('tokenbot')
-client.run(str(token))
+bot.run(str(token))
