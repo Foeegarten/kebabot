@@ -4,6 +4,7 @@ from discord import role
 from discord.embeds import EmptyEmbed
 from pymongo import mongo_client
 from discord import client
+from six.moves import urllib
 from discord.ext.commands.core import cooldown
 from discord.ext import commands
 from discord.ext.commands.errors import CheckFailure, MissingPermissions
