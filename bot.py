@@ -49,6 +49,15 @@ async def top(ctx):
         spiso4ek.append(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
     embed.add_field(name=' ',value= '\n'.join(spiso4ek))
     await ctx.send( '\n'.join(spiso4ek))
+@bot.command()
+    async def alive(ctx):
+        alive = []
+        for guild in bot.guilds:
+            for member in guild.members:
+                data = collection.find_one({"_id":member.id})
+                if data['health']>0:
+                    alive.append(member.display_name)
+        await ctx.send('\n'.join(alive))
 @bot.event
 async def on_ready():
     for guild in bot.guilds:
