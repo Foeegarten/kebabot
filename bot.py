@@ -118,6 +118,9 @@ async def slap(ctx,*,member:discord.Member=None):
     data = collection.find_one({"_id":member.id})
     choice = random.randint(0,10)
     hit = random.randint(0,40)
+    if ctx.message.author.id==member.id:
+        await ctx.send('Ты не можешь бить себя по жопке,глупыш!')
+        raise Exception('self')
     if ydata['health']<=0:
         embed = discord.Embed(title=f"{member.name}",colour=member.colour)
         embed.add_field(name='Ошибка',value='Вы мертвый, восстановите здоровье, иначе вы не сможете атаковать!')
