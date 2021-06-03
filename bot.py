@@ -17,8 +17,8 @@ from pprint import pprint
 from discord.ext.commands import cooldown,BucketType,MissingRequiredArgument,CommandOnCooldown
 import requests, bs4
 import re
-
-cluster = pymongo.MongoClient(f"mongodb+srv://foeegarten:freakinshop@cluster0.ocpqw.mongodb.net/dbkeba?retryWrites=true&w=majority")
+password =  urllib.parse.quote_plus(os.getenv('password'))
+cluster = pymongo.MongoClient(f"mongodb+srv://foeegarten:{password}@cluster0.ocpqw.mongodb.net/dbkeba?retryWrites=true&w=majority")
 db = cluster.test
 collection = cluster.dbkeba.health
 url = 'https://wasd.tv/kebabobka'
