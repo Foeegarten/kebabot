@@ -16,7 +16,8 @@ from pprint import pprint
 from discord.ext.commands import cooldown,BucketType,MissingRequiredArgument,CommandOnCooldown
 import requests, bs4
 import re
-cluster = pymongo.MongoClient("mongodb+srv://foeegarten:agranat2314A@cluster0.ocpqw.mongodb.net/dbkeba?retryWrites=true&w=majority")
+mongopass = os.getenv('password')
+cluster = pymongo.MongoClient(f"mongodb+srv://foeegarten:{mongopass}@cluster0.ocpqw.mongodb.net/dbkeba?retryWrites=true&w=majority")
 db = cluster.test
 collection = cluster.dbkeba.health
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
