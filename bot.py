@@ -63,13 +63,6 @@ async def anek(ctx):
 async def on_member_join(member):
     role = discord.utils.get(member.guild.roles,id=827141363769278475)
     await member.add_roles(role)
-    post={
-    "_id": member.id,
-    "health":100,
-    "points":0
-    }
-    if collection.count_documents({"_id":member.id})==0:
-        collection.insert_one(post)
 @client.listen('on_member_remove')
 async def on_member_remove(member):
     await send_message(826967373432619047,f"{member.name} вышел")
@@ -85,103 +78,6 @@ async def clear(ctx, amount: int):
         await ctx.channel.purge(limit=amount)
     except MissingPermissions as err:
         ctx.send('Вы не администратор')
-@client.command()
-@cooldown(1,60,BucketType.user)
-async def slap(ctx,*,member:discord.Member=None):
-    
-    ydata = collection.find_one({"_id":ctx.message.author.id})
-    data = collection.find_one({"_id":member.id})
-    choice = random.randint(0,10)
-    hit = random.randint(0,40)
-    if ctx.message.author.id==member.id:
-        await ctx.send('Ты не можешь бить себя по жопке,глупыш!')
-        raise Exception('self')
-    if ydata['health']<=0:
-        embed = discord.Embed(title=f"{member.name}",colour=member.colour)
-        embed.add_field(name='Ошибка',value='Вы мертвый, восстановите здоровье, иначе вы не сможете атаковать!')
-        await ctx.send(embed=embed)
-        raise Exception('dead')
-    if data['health']<=0:
-        embed = discord.Embed(title=f"{member.name}",colour=member.colour)
-        embed.add_field(name='Ошибка',value='Ваш соперник мертв, лежачего не бьют!')
-        await ctx.send(embed=embed)
-        raise Exception('dead')
-    if choice >= 4:
-        choice_=random.randint(1,100)
-        if choice_>=1 and choice_<35:
-            hit = random.randint(1,40)
-        elif choice_>=35 and choice_<70:
-            hit = random.randint(40,60)
-        elif choice_>=70 and choice_<95:
-            hit = random.randint(60,80)
-        elif choice_>=95 and choice_<=100:
-            hit= data['health']
-        if hit>data['health']:
-            hit=data['health']
-        collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"points":ydata['points']+hit}})
-
-        collection.update_one({"_id":member.id},
-            {"$set":{"health":data["health"]-hit}})
-        embed=discord.Embed(title=" ",colour=member.colour)
-        embed.add_field(name="Атака",value=f"Вы шлепнули {member.name} по жопке и нанесли **{hit}** урона")
-        embed.add_field(name="Поинты",value=f"Вы получили {hit} очков")
-        await ctx.send(embed=embed)
-    else:
-        choice_=random.randint(1,100)
-        if choice_>=1 and choice_<35:
-            hit = random.randint(1,40)
-        elif choice_>=35 and choice_<70:
-            hit = random.randint(40,60)
-        elif choice_>=70 and choice_<95:
-            hit = random.randint(60,80)
-        elif choice_>=95 and choice_<=100:
-            hit= data['health']
-        if hit>ydata['health']:
-            hit=ydata['health']
-        hit = random.randint(0,ydata['health'])
-        collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"health":ydata["health"]-hit}})
-        embed=discord.Embed(title=" ",colour=member.colour)
-        embed.add_field(name="Атака",value=f"Замахиваясь по жопке {member.name} вы промахнулись и попали по своей и нанесли себе **{hit}** урона")
-        await ctx.send(embed=embed)
-@client.command()
-async def health(ctx,*,member:discord.Member=None):
-    ydata = collection.find_one({"_id":member.id})
-    embed=discord.Embed(title=" ",colour=ctx.message.author.colour)
-    embed.add_field(name='Здоровье', value=f"У {member.name} {ydata['health']} здоровья")
-    await ctx.send(embed=embed)
-@client.command()
-async def points(ctx,*,member:discord.Member=None):
-    data = collection.find_one({"_id":member.id})
-    await ctx.send(f"У {member.display_name} {data['points']} очков")
-@client.command()
-@cooldown(1,60,BucketType.user)
-async def heal(ctx,*,member:discord.Member=None):
-    ydata = collection.find_one({"_id":member.id})
-    choice_=random.randint(1,100)
-    if choice_>=1 and choice_<35:
-        healint = random.randint(1,40)
-    elif choice_>=35 and choice_<70:
-        healint = random.randint(40,60)
-    elif choice_>=70 and choice_<95:
-        healint = random.randint(60,80)
-    elif choice_>=95 and choice_<=100:
-            healint= 100-ydata['health']
-    if ydata['health']+healint >100:
-        healint = random.randint(0,100-ydata['health'])
-        collection.update_one({"_id":member.id},
-            {'$set':{"health":ydata['health']+healint}})
-        embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
-        embed.add_field(name='Здоровье',value=f"Вы отхилили {member.display_name} здоровье в размере {healint} единиц")
-        await ctx.send(embed=embed)
-        
-    else:
-        collection.update_one({"_id":member.id},
-            {'$set':{"health":ydata['health']+healint}})
-        embed = discord.Embed(title=' ',colour=ctx.message.author.colour)
-        embed.add_field(name='Здоровье',value=f"Вы отхилили {member.display_name} здоровье в размере {healint} единиц")
-        await ctx.send(embed=embed)
 @client.listen('on_command_error')
 async def on_command_error(ctx,exc):
     if isinstance(exc, CommandOnCooldown):
@@ -194,32 +90,6 @@ async def on_command_error(ctx,exc):
 async def avatar(ctx, *,  avamember : discord.Member=None):
     userAvatarUrl = avamember.avatar_url
     await ctx.send(userAvatarUrl)
-@client.command()
-@commands.has_permissions(administrator=True,manage_messages=True)  
-async def reset(ctx):
-    for guild in client.guilds:
-        for member in guild.members:
-            collection.update_one({"_id":member.id},
-                {'$set':{"points":0}})
-    await ctx.send('База данных обнулена успешно')
-@client.command()
-@cooldown(1,60,BucketType.user)
-async def top(ctx):
-    await ctx.send('Подождите некоторое время')
-    spisok = []
-    spiso4ek =[]
-    embed = discord.Embed(title='Топ 10 ',colour=ctx.message.author.colour)
-    for guild in client.guilds:
-        for member in guild.members:
-            data = collection.find_one({"_id":member.id})
-            spisok.append(data['points'])
-    spisok = set(spisok)
-    spisok=sorted(spisok,reverse=True)
-    for x in range(10):
-        pointy = collection.find_one({"points":spisok[x]})
-        spiso4ek.append(f"У {(client.get_user(pointy['_id'])).display_name} {pointy['points']} очков")
-    embed.add_field(name=' ',value= '\n'.join(spiso4ek))
-    await ctx.send( '\n'.join(spiso4ek))
 @client.command()
 async def info(ctx,member:discord.Member=None):
     if not member:
