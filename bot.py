@@ -17,8 +17,8 @@ cluster = pymongo.MongoClient(f"mongodb+srv://foeegarten:{password}@cluster0.ocp
 db = cluster.test
 collection = cluster.dbkeba.health
 client = commands.Bot(command_prefix="!",intents = discord.Intents.all(),help_command=None)
-url = 'https://wasd.tv/kebabobka'
-onlstream_ = False
+url_wasd = 'https://wasd.tv/kebabobka'
+url_twitch ='https://www.twitch.tv/kebabobka'
 async def send_message(channel_id: int,msg):
     channel = client.get_channel(channel_id)
     await channel.send(msg)
@@ -40,14 +40,25 @@ async def ready():
     print('bot is ready')
     while True:
         try:
-            streams = streamlink.streams(url)
-            onlstream = True
+            streams = streamlink.streams(url_wasd)
+            onlstream_wasd = True
         except PluginError as err:
-            onlstream = False
-        if onlstream==True:
-            print('[log] stream is online')
-            await send_message(826967699082969088,random.choice(phrases))
-            await asyncio.sleep(15000)
+            onlstream_wasd = False
+        try:
+            streams = streamlink.streams(url_twitch)
+            onlstream_twitch = True
+        except PluginError as err:
+            onlstream_twitch = False
+        if onlstream_wasd==True or onlstream_twitch==True:
+            
+            if onlstream_wasd==True:
+                print('[log] stream on wasd is online')
+                await send_message(826967699082969088,random.choice(phrases))
+                await asyncio.sleep(15000)
+            elif onlstream_twitch==True:
+                print('[log] stream on twitch is online')
+                await send_message(826967699082969088,'https://www.twitch.tv/kebabobka СТРИМИТ!!')
+                await asyncio.sleep(15000)
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
