@@ -57,7 +57,7 @@ async def ready():
                 await asyncio.sleep(15000)
             if onlstream_twitch==True:
                 print('[log] stream on twitch is online')
-                await send_message(826967699082969088,'https://www.twitch.tv/kebabobka СТРИМИТ!!')
+                await send_message(826967699082969088,'@everyone https://www.twitch.tv/kebabobka СТРИМИТ!!')
                 onlstream_twitch=False
                 await asyncio.sleep(15000)
         else:
