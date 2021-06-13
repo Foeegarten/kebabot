@@ -28,17 +28,10 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
 async def ready():
-    for guild in client.guilds:
-        for member in guild.members:
-            post={
-                "_id": member.id,
-                "health":100,
-                "points":0
-                }
-            if collection.count_documents({"_id":member.id})==0:
-                collection.insert_one(post)
     print('bot is ready')
     while True:
+        onlstream_wasd = False
+        onlstream_twitch = False
         try:
             streams = streamlink.streams(url_wasd)
             onlstream_wasd = True
