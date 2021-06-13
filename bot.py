@@ -31,8 +31,6 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 async def ready():
     print('bot is ready')
     while True:
-        onlstream_wasd = False
-        onlstream_twitch = False
         try:
             streams_t = streamlink.streams(url_twitch)
             if streams_t =={}:
@@ -57,7 +55,7 @@ async def ready():
                 
             if onlstream_twitch==True:
                 print('[log] stream on twitch is online')
-                await send_message(826967699082969088,'@everyone https://www.twitch.tv/kebabobka СТРИМИТ!!')
+                await send_message(826967699082969088,'https://www.twitch.tv/kebabobka СТРИМИТ!!')
                 onlstream_twitch=False
             await asyncio.sleep(15000)
         else:
