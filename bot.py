@@ -54,12 +54,12 @@ async def ready():
                 print('[log] stream on wasd is online')
                 await send_message(826967699082969088,random.choice(phrases))
                 onlstream_wasd=False
-                await asyncio.sleep(15000)
+                
             if onlstream_twitch==True:
                 print('[log] stream on twitch is online')
                 await send_message(826967699082969088,'@everyone https://www.twitch.tv/kebabobka СТРИМИТ!!')
                 onlstream_twitch=False
-                await asyncio.sleep(15000)
+            await asyncio.sleep(15000)
         else:
             print('[log] stream is offline')
             await asyncio.sleep(120)
