@@ -27,30 +27,38 @@ phrases = ['@everyone оо нихуя там кебабобка подрубил
 '@everyone Фиксируем прибыль https://wasd.tv/kebabobka ','@everyone Че тааааам https://wasd.tv/kebabobka','@everyone Че такой серьезный? - улыбнулся - воооо)))) https://wasd.tv/kebabobka','@everyone Оаоаоаоао ммммм подруб мммммм https://wasd.tv/kebabobka','@everyone Я...ммм...пук...подр....подруб....мммм....пук ... https://wasd.tv/kebabobka','@everyone Скука падлы покой дуры мы фанаты подруба кебабуры хдхдхдхдддд https://wasd.tv/kebabobka',
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
+@client.listen('on_ready')
 async def ready():
     print('bot is ready')
     while True:
         onlstream_wasd = False
         onlstream_twitch = False
         try:
-            streams = streamlink.streams(url_wasd)
-            onlstream_wasd = True
-        except PluginError as err:
-            onlstream_wasd = False
-        try:
-            streams = streamlink.streams(url_twitch)
+            streams_t = streamlink.streams(url_twitch)
+            if streams_t =={}:
+                raise PluginError
             onlstream_twitch = True
         except PluginError as err:
             onlstream_twitch = False
+        try:
+            streams_w = streamlink.streams(url_wasd)
+            if streams_w =={}:
+                raise PluginError
+            onlstream_wasd = True
+        except PluginError as err:
+            onlstream_wasd = False
+
         if onlstream_wasd==True or onlstream_twitch==True:
             
             if onlstream_wasd==True:
                 print('[log] stream on wasd is online')
                 await send_message(826967699082969088,random.choice(phrases))
+                onlstream_wasd=False
                 await asyncio.sleep(15000)
-            elif onlstream_twitch==True:
+            if onlstream_twitch==True:
                 print('[log] stream on twitch is online')
                 await send_message(826967699082969088,'https://www.twitch.tv/kebabobka СТРИМИТ!!')
+                onlstream_twitch=False
                 await asyncio.sleep(15000)
         else:
             print('[log] stream is offline')
