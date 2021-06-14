@@ -23,10 +23,13 @@ async def send_message(channel_id: int,msg):
     channel = client.get_channel(channel_id)
     await channel.send(msg)
 
-phrases = ['@everyone оо нихуя там кебабобка подрубил все бегом смотреть https://wasd.tv/kebabobka ','@everyone Ready steady хуй на блюде https://wasd.tv/kebabobka','@everyone идем массово чалавать песок https://wasd.tv/kebabobka','@everyone Эйбан рот ето подруб ода ода ода https://wasd.tv/kebabobka','@everyone Пацаны пацаны эй https://wasd.tv/kebabobka',
+phrases_w = ['@everyone оо нихуя там кебабобка подрубил все бегом смотреть https://wasd.tv/kebabobka ','@everyone Ready steady хуй на блюде https://wasd.tv/kebabobka','@everyone идем массово чалавать песок https://wasd.tv/kebabobka','@everyone Эйбан рот ето подруб ода ода ода https://wasd.tv/kebabobka','@everyone Пацаны пацаны эй https://wasd.tv/kebabobka',
 '@everyone Фиксируем прибыль https://wasd.tv/kebabobka ','@everyone Че тааааам https://wasd.tv/kebabobka','@everyone Че такой серьезный? - улыбнулся - воооо)))) https://wasd.tv/kebabobka','@everyone Оаоаоаоао ммммм подруб мммммм https://wasd.tv/kebabobka','@everyone Я...ммм...пук...подр....подруб....мммм....пук ... https://wasd.tv/kebabobka','@everyone Скука падлы покой дуры мы фанаты подруба кебабуры хдхдхдхдддд https://wasd.tv/kebabobka',
 '@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://wasd.tv/kebabobka']
 @client.listen('on_ready')
+phrases_t =phrases = ['@everyone оо нихуя там кебабобка подрубил все бегом смотреть https://www.twitch.tv/kebabobka ','@everyone Ready steady хуй на блюде https://www.twitch.tv/kebabobka','@everyone идем массово чалавать песок https://www.twitch.tv/kebabobka','@everyone Эйбан рот ето подруб ода ода ода https://www.twitch.tv/kebabobka','@everyone Пацаны пацаны эй https://www.twitch.tv/kebabobka',
+'@everyone Фиксируем прибыль https://www.twitch.tv/kebabobka ','@everyone Че тааааам https://www.twitch.tv/kebabobka','@everyone Че такой серьезный? - улыбнулся - воооо)))) https://www.twitch.tv/kebabobka','@everyone Оаоаоаоао ммммм подруб мммммм https://www.twitch.tv/kebabobka','@everyone Я...ммм...пук...подр....подруб....мммм....пук ... https://www.twitch.tv/kebabobka','@everyone Скука падлы покой дуры мы фанаты подруба кебабуры хдхдхдхдддд https://www.twitch.tv/kebabobka',
+'@everyone ЛЭЙ ЛЭЙ НЕ ЖАЛЭЙ https://www.twitch.tv/kebabobka']
 async def ready():
     print('bot is ready')
     while True:
@@ -49,12 +52,12 @@ async def ready():
             
             if onlstream_wasd==True:
                 print('[log] stream on wasd is online')
-                await send_message(826967699082969088,random.choice(phrases))
+                await send_message(826967699082969088,random.choice(phrases_w))
                 onlstream_wasd=False
                 
             if onlstream_twitch==True:
                 print('[log] stream on twitch is online')
-                await send_message(826967699082969088,'https://www.twitch.tv/kebabobka СТРИМИТ!!')
+                await send_message(826967699082969088,random.choice(phrases_t))
                 onlstream_twitch=False
             await asyncio.sleep(15000)
         else:
