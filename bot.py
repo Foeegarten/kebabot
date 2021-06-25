@@ -92,7 +92,7 @@ async def on_message(message):
         await message.add_reaction('<:nails:839113505713553408>')
     data=collection.find_one({"_id":message.author.id})
     collection.update_one({"_id":message.author.id},
-        {"$set":{"money":data['money']+value}})
+        {"$set":{"money":data['money']+value/5}})
 @client.command(pass_context=True)
 @commands.has_permissions(administrator=True,manage_messages=True)  
 async def clear(ctx, amount: int):
