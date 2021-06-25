@@ -117,5 +117,22 @@ async def info(ctx,member:discord.Member=None):
         embed.add_field(name='Зашел на сервер: ',value=member.joined_at.strftime("%a,%d,%B,%Y,%I,%M"),inline=False)
         embed.add_field(name=f'Роли [{len(roles)}] ',value="** **".join([role.mention for role in roles]),inline=False)
         await ctx.send(embed=embed)
+@client.command()
+async def balance(ctx):
+    data=collection.find_one({"_id":ctx.message.author.id})
+    await ctx.send(f"Ваш баланс {data['money']} монет")
+@client.command()
+async def flip(ctx,amount:int):
+    coin=random.randint(1,2)
+    data= collection.find_one({"_id":ctx.message.author.id})
+    if data['money']>=amount:
+        if coin==1:
+            collection.update_one({"_id":ctx.message.author.id},
+            {"$set":{"money":data['money']+amount*2}})
+            await ctx.send(f"Выпала решка,начислено {amount*2} монет")
+        if coin==2:
+            collection.update_one({"_id":ctx.message.author.id},
+            {"$set":{"money":data['money']-amount}})
+            await ctx.send(f"Выпал орел,снято {amount} монет")
 token = os.getenv('tokenbot')
 client.run(str(token))
