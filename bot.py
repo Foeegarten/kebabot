@@ -87,7 +87,7 @@ async def on_member_remove(member):
     await send_message(826967373432619047,f"{member.name} вышел")
 @client.listen('on_message')
 async def on_message(message):
-    value=0,20
+    value=1
     if '<:nails:839113505713553408>' in message.content:
         await message.add_reaction('<:nails:839113505713553408>')
     data=collection.find_one({"_id":message.author.id})
