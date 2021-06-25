@@ -30,6 +30,14 @@ phrases_t = ['@everyone оо нихуя там кебабобка подруби
 
 @client.listen('on_ready')
 async def ready():
+    for guild in client.guilds:
+        for member in guild.members:
+            post={
+                "_id": member.id,
+                "money":100
+                }
+            if collection.count_documents({"_id":member.id})==0:
+                collection.insert_one(post)
     print('bot is ready')
     while True:
         try:
