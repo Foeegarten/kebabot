@@ -30,7 +30,6 @@ phrases_t = ['@everyone оо нихуя там кебабобка подруби
 
 @client.listen('on_ready')
 async def ready():
-    await send_message(826967699082969088,'Обслуживание бота бессрочно приостановлено')
     for guild in client.guilds:
         for member in guild.members:
             post={
