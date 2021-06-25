@@ -132,7 +132,7 @@ async def info(ctx,member:discord.Member=None):
 @client.command()
 async def balance(ctx):
     data=collection.find_one({"_id":ctx.message.author.id})
-    await ctx.send(f"Ваш баланс { f"{data['money']} монет")
+    await ctx.send(f"Ваш баланс {data['money']} монет")
 @client.command()
 async def flip(ctx,amount:int):
     if amount>0:
