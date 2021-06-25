@@ -87,8 +87,12 @@ async def on_member_remove(member):
     await send_message(826967373432619047,f"{member.name} вышел")
 @client.listen('on_message')
 async def on_message(message):
+    value=0,20
     if '<:nails:839113505713553408>' in message.content:
         await message.add_reaction('<:nails:839113505713553408>')
+    data=collection.find_one({"_id":message.author.id})
+    collection.update_one({"_id":message.author.id},
+        {"$set":{"money":data['money']+value}})
 @client.command(pass_context=True)
 @commands.has_permissions(administrator=True,manage_messages=True)  
 async def clear(ctx, amount: int):
@@ -135,6 +139,8 @@ async def flip(ctx,amount:int):
     data= collection.find_one({"_id":ctx.message.author.id})
     if data['money']>=amount:
         if coin==1:
+            collection.update_one({"_id":ctx.message.author.id},
+            {"$set":{"money":data['money']-amount}})
             collection.update_one({"_id":ctx.message.author.id},
             {"$set":{"money":data['money']+amount*2}})
             await ctx.send(f"Выпала решка,начислено {amount*2} монет")
