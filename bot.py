@@ -143,7 +143,7 @@ async def flip(ctx,amount:int):
             {"$set":{"money":data['money']-amount}})
             collection.update_one({"_id":ctx.message.author.id},
             {"$set":{"money":data['money']+amount*2}})
-            await ctx.send(f"Выпала решка,начислено {amount*2} монет")
+            await ctx.send(f"Выпала решка,начислено {amount} монет")
         if coin==2:
             collection.update_one({"_id":ctx.message.author.id},
             {"$set":{"money":data['money']-amount}})
