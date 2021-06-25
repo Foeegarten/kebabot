@@ -92,7 +92,7 @@ async def on_message(message):
         await message.add_reaction('<:nails:839113505713553408>')
     data=collection.find_one({"_id":message.author.id})
     collection.update_one({"_id":message.author.id},
-        {"$set":{"money":data['money']+value/4}})
+        {"$set":{"money":data['money']+value}})
 @client.command(pass_context=True)
 @commands.has_permissions(administrator=True,manage_messages=True)  
 async def clear(ctx, amount: int):
@@ -135,18 +135,21 @@ async def balance(ctx):
     await ctx.send(f"Ваш баланс {'%.2f' % data['money']} монет")
 @client.command()
 async def flip(ctx,amount:int):
-    coin=random.randint(1,2)
-    data= collection.find_one({"_id":ctx.message.author.id})
-    if data['money']>=amount:
-        if coin==1:
-            collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"money":data['money']-amount}})
-            collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"money":data['money']+amount}})
-            await ctx.send(f"Выпала решка,начислено {amount} монет")
-        if coin==2:
-            collection.update_one({"_id":ctx.message.author.id},
-            {"$set":{"money":data['money']-amount}})
-            await ctx.send(f"Выпал орел,снято {amount} монет")
+    if amount>0:
+        coin=random.randint(1,2)
+        data= collection.find_one({"_id":ctx.message.author.id})
+        if data['money']>=amount:
+            if coin==1:
+                collection.update_one({"_id":ctx.message.author.id},
+                {"$set":{"money":data['money']-amount}})
+                collection.update_one({"_id":ctx.message.author.id},
+                {"$set":{"money":data['money']+amount}})
+                await ctx.send(f"Выпала решка,начислено {amount} монет")
+            if coin==2:
+                collection.update_one({"_id":ctx.message.author.id},
+                {"$set":{"money":data['money']-amount}})
+                await ctx.send(f"Выпал орел,снято {amount} монет")
+    else:
+        await ctx.send('Выберите число больше 0')
 token = os.getenv('tokenbot')
 client.run(str(token))
