@@ -88,7 +88,7 @@ async def on_member_remove(member):
 @client.listen('on_message')
 async def on_message(message):
     value=1
-    if 'жид'in message.content or 'Жид' in message.content or 'ЖИд' in message.content or 'ЖиД' in message.content :
+    if 'жид'in message.content or 'Жид' in message.content or 'ЖИд' in message.content or 'ЖиД' in message.content or 'ЖИД' in message.content :
         channel = message.channel
         await channel.purge(limit=1)
     if '<:nails:839113505713553408>' in message.content:
