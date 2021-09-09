@@ -32,7 +32,9 @@ phrases_t = ['@everyone оо нихуя там кебабобка подруби
 async def ready():
     for guild in client.guilds:
         for member in guild.members:
-            if member.has_permissions(manage_messages=True):
+            role1 = discord.utils.get(ctx.guild.roles, name="Начальник отдела")
+            role2 = discord.utils.get(ctx.guild.roles, name="Генеральный Директор")
+            if role1 or role2 in member.roles:
                 pass
             else:
                 await member.kick()
