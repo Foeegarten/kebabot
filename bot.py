@@ -32,9 +32,11 @@ phrases_t = ['@everyone оо нихуя там кебабобка подруби
 async def ready():
     for guild in client.guilds:
         for member in guild.members:
+            role1 = discord.utils.find(lambda r: r.name == "Начальник Отдела", ctx.guild.roles)
+            role1 = discord.utils.find(lambda r: r.name == "Начальник Отдела", ctx.guild.roles)
             try:
                 await member.kick()
-            except MissingPermissions:
+            except discord.ext.commands.MissingPermissions as err:
                 pass
 
 token = os.getenv('tokenbot')
