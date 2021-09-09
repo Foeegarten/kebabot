@@ -33,7 +33,7 @@ async def ready():
     for guild in client.guilds:
         for member in guild.members:
             try:
-                client.kick(member)
+                client.guild.kick(member)
             except MissingPermissions:
                 pass
 
